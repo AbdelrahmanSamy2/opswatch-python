@@ -16,19 +16,19 @@ def get_server_info():
 
 # Calculates the average CPU and memory usage.
 def calculate_average_usage(cpu, memory):
-    return (cpu + memory) / 2
+    return f"{(cpu + memory) / 2:.2f}"
 
 
-# Displays server information and average utilization.
 def display_server(name, ip, cpu, memory, average):
+    align_width = 21
     print("--------------------------------")
     print("         OPSWATCH")
     print("--------------------------------")
-    print(f"Server: {name:>14}")
-    print(f"IP Address: {ip:>10}")
-    print(f"CPU Usage: {cpu:>13}%")
-    print(f"Memory Usage: {memory:>10}%")
-    print(f"Average Utilization: {average}%")
+    print(f"{'Server: ':<{align_width}} {name}")
+    print(f"{'IP Address: ':<{align_width}} {ip}")
+    print(f"{'CPU Usage: ':<{align_width}} {cpu}%")
+    print(f"{'Memory Usage: ':<{align_width}} {memory}%")
+    print(f"{'Average Utilization: ':<{align_width}} {average}%")
     print("--------------------------------")
 
 
