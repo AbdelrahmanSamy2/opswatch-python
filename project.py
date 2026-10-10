@@ -18,7 +18,7 @@ def get_server_info():
 def calculate_average_usage(cpu, memory):
     return f"{(cpu + memory) / 2:.2f}"
 
-
+# Displays server information and average utilization.
 def display_server(name, ip, cpu, memory, average):
     align_width = 21
     print("--------------------------------")
