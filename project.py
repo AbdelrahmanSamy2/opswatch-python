@@ -16,7 +16,8 @@ def get_server_info():
 
 # Calculates the average CPU and memory usage.
 def calculate_average_usage(cpu, memory):
-    return f"{(cpu + memory) / 2:.2f}"
+    return (cpu + memory) / 2
+
 
 # Displays server information and average utilization.
 def display_server(name, ip, cpu, memory, average):
@@ -26,9 +27,9 @@ def display_server(name, ip, cpu, memory, average):
     print("--------------------------------")
     print(f"{'Server: ':<{align_width}} {name}")
     print(f"{'IP Address: ':<{align_width}} {ip}")
-    print(f"{'CPU Usage: ':<{align_width}} {cpu}%")
-    print(f"{'Memory Usage: ':<{align_width}} {memory}%")
-    print(f"{'Average Utilization: ':<{align_width}} {average}%")
+    print(f"{'CPU Usage: ':<{align_width}} {cpu:.2f}%")
+    print(f"{'Memory Usage: ':<{align_width}} {memory:.2f}%")
+    print(f"{'Average Utilization: ':<{align_width}} {average:.2f}%")
     print("--------------------------------")
 
 
