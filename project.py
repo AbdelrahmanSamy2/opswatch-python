@@ -2,7 +2,10 @@
 def main():
     server_name, server_ip, cpu_usage, memory_usage = get_server_info()
     average_usage = calculate_average_usage(cpu_usage, memory_usage)
-    display_server(server_name, server_ip, cpu_usage, memory_usage, average_usage)
+    cpu_status = determine_health_status(cpu_usage)
+    memory_status = determine_health_status(memory_usage)
+    overall_status = determine_overall_health_status(cpu_status, memory_status)
+    display_server(server_name, server_ip, cpu_usage, memory_usage, average_usage, cpu_status, memory_status, overall_status)
 
 
 # Retrieves server information from user input.
@@ -19,17 +22,41 @@ def calculate_average_usage(cpu, memory):
     return (cpu + memory) / 2
 
 
+def determine_health_status(usage):
+    if usage >= 80:
+        return "CRITICAL"
+    elif usage >= 60:
+        return "WARNING"
+    else:
+        return "HEALTHY"
+
+
+def determine_overall_health_status(cpu_status, memory_status):
+    if cpu_status == "CRITICAL" or memory_status == "CRITICAL":
+        return "CRITICAL"
+    elif cpu_status == "WARNING" or memory_status == "WARNING":
+        return "WARNING"
+    else:
+        return "HEALTHY"
+
+
 # Displays server information and average utilization.
-def display_server(name, ip, cpu, memory, average):
+def display_server(name, ip, cpu_usage, memory_usage, average, cpu_status, memory_status, overall_status):
     align_width = 21
     print("--------------------------------")
     print("         OPSWATCH")
     print("--------------------------------")
     print(f"{'Server: ':<{align_width}} {name}")
     print(f"{'IP Address: ':<{align_width}} {ip}")
-    print(f"{'CPU Usage: ':<{align_width}} {cpu:.2f}%")
-    print(f"{'Memory Usage: ':<{align_width}} {memory:.2f}%")
+    print()
+    print(f"{'CPU Usage: ':<{align_width}} {cpu_usage:.2f}%")
+    print(f"{'CPU Status: ':<{align_width}} {cpu_status}")
+    print()
+    print(f"{'Memory Usage: ':<{align_width}} {memory_usage:.2f}%")
+    print(f"{'Memory Status: ':<{align_width}} {memory_status}")
+    print()
     print(f"{'Average Utilization: ':<{align_width}} {average:.2f}%")
+    print(f"{'Overall Status: ':<{align_width}} {overall_status}")
     print("--------------------------------")
 
 
