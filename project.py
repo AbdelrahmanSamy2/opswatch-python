@@ -1,11 +1,19 @@
 # OPSWATCH Python Project - Monitors server CPU and memory usage and displays average utilization.
 def main():
-    server_name, server_ip, cpu_usage, memory_usage = get_server_info()
-    average_usage = calculate_average_usage(cpu_usage, memory_usage)
-    cpu_status = determine_health_status(cpu_usage)
-    memory_status = determine_health_status(memory_usage)
-    overall_status = determine_overall_health_status(cpu_status, memory_status)
-    display_server(server_name, server_ip, cpu_usage, memory_usage, average_usage, cpu_status, memory_status, overall_status)
+    # Get the number of Servers
+    while True:
+        number_servers = int(input("Number of servers: "))
+        if number_servers > 0:
+            break
+    
+    for server_number in range(number_servers):
+        print(f"--- Server {server_number + 1} Input ---")
+        server_name, server_ip, cpu_usage, memory_usage = get_server_info()
+        average_usage = calculate_average_usage(cpu_usage, memory_usage)
+        cpu_status = determine_health_status(cpu_usage)
+        memory_status = determine_health_status(memory_usage)
+        overall_status = determine_overall_health_status(cpu_status, memory_status)
+        display_server(server_number, server_name, server_ip, cpu_usage, memory_usage, average_usage, cpu_status, memory_status, overall_status)
 
 
 # Retrieves server information from user input.
@@ -21,7 +29,7 @@ def get_server_info():
 def calculate_average_usage(cpu, memory):
     return (cpu + memory) / 2
 
-
+# Determine the health status
 def determine_health_status(usage):
     if usage >= 80:
         return "CRITICAL"
@@ -30,7 +38,7 @@ def determine_health_status(usage):
     else:
         return "HEALTHY"
 
-
+# Determine the overall health status
 def determine_overall_health_status(cpu_status, memory_status):
     if cpu_status == "CRITICAL" or memory_status == "CRITICAL":
         return "CRITICAL"
@@ -41,23 +49,22 @@ def determine_overall_health_status(cpu_status, memory_status):
 
 
 # Displays server information and average utilization.
-def display_server(name, ip, cpu_usage, memory_usage, average, cpu_status, memory_status, overall_status):
+def display_server(number, name, ip, cpu_usage, memory_usage, average, cpu_status, memory_status, overall_status):
     align_width = 21
-    print("--------------------------------")
-    print("         OPSWATCH")
-    print("--------------------------------")
-    print(f"{'Server: ':<{align_width}} {name}")
-    print(f"{'IP Address: ':<{align_width}} {ip}")
-    print()
-    print(f"{'CPU Usage: ':<{align_width}} {cpu_usage:.2f}%")
-    print(f"{'CPU Status: ':<{align_width}} {cpu_status}")
-    print()
-    print(f"{'Memory Usage: ':<{align_width}} {memory_usage:.2f}%")
-    print(f"{'Memory Status: ':<{align_width}} {memory_status}")
-    print()
-    print(f"{'Average Utilization: ':<{align_width}} {average:.2f}%")
-    print(f"{'Overall Status: ':<{align_width}} {overall_status}")
-    print("--------------------------------")
+    print(f"""
+    --- Server {number + 1} Report ---
+    {'Server: ':<{align_width}} {name}
+    {'IP Address: ':<{align_width}} {ip}
+
+    {'CPU Usage: ':<{align_width}} {cpu_usage:.2f}%
+    {'CPU Status: ':<{align_width}} {cpu_status}
+
+    {'Memory Usage: ':<{align_width}} {memory_usage:.2f}%
+    {'Memory Status: ':<{align_width}} {memory_status}
+
+    {'Average Utilization: ':<{align_width}} {average:.2f}%
+    {'Overall Status: ':<{align_width}} {overall_status}
+    """)
 
 
 main()
