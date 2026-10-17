@@ -2,6 +2,11 @@
 def main():
     # Initialize the fleet list
     fleet = []
+    fleet_summary={
+        "HEALTHY": 0,
+        "WARNING": 0,
+        "CRITICAL": 0
+    }
     # Get the number of Servers
     while True:
         number_servers = int(input("Number of servers: "))
@@ -26,13 +31,28 @@ def main():
             "memory_status": memory_status,
             "overall_status": overall_status
         })
-    
+    # Analyze fleet of servers and store into fleet_summary
+    for server in fleet:
+        fleet_summary[server["overall_status"]] += 1
+
     print(f"""
 ==============================
 {'SERVER REPORTS':^30}
 ============================== """)
     for server in fleet:
         display_server(server)
+
+    print(f"""
+==============================
+{'FLEET SUMMARY':^30}
+============================== 
+Total Servers: {len(fleet)}
+HEALTHY:       {fleet_summary["HEALTHY"]}
+WARNING:       {fleet_summary["WARNING"]}
+CRITICAL:      {fleet_summary["CRITICAL"]}
+
+""")
+
 
 
 # Retrieves server information from user input.
