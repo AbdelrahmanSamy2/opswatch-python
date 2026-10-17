@@ -6,7 +6,8 @@ def main():
     display_servers(fleet)
     # Display Fleet Analysis Summary
     display_fleet_summary(analyze_fleet(fleet))
-    return
+    display_attention_servers(get_attention_servers(fleet))
+
 
 # Get the number of Servers (Keep asking until getting a positive number of servers)
 def get_number_servers():
@@ -17,7 +18,7 @@ def get_number_servers():
     return number_servers
 
 
-# Take the inputs about each server and store them into a list of dictionaries. 
+# Take the inputs about each server and store them into a list of dictionaries.
 def store_fleet_data(number_servers):
     fleet = []
     for server_number in range(number_servers):
@@ -93,8 +94,7 @@ def display_servers(fleet):
         {'Memory Usage: ':<{align_width}} {server["memory"]:.2f}%
         {'Memory Status: ':<{align_width}} {server["memory_status"]}
         {'Average Utilization: ':<{align_width}} {server["average"]:.2f}%
-        {'Overall Status: ':<{align_width}} {server["overall_status"]}
-        """)
+        {'Overall Status: ':<{align_width}} {server["overall_status"]}""")
 
 
 # Function that analyzes the fleet and return fleet_summary dictionary
@@ -129,9 +129,32 @@ def display_fleet_summary(fleet_summary):
     CRITICAL:               {fleet_summary["CRITICAL"]}
 
     Average Fleet CPU:      {fleet_summary["cpu_average"]:.2f}%
-    Average Fleet Memory:   {fleet_summary["memory_average"]:.2f}%
+    Average Fleet Memory:   {fleet_summary["memory_average"]:.2f}%""")
 
-    """)
+
+# Identify the Servers that needs attention (WARNING/CRITICAL)
+def get_attention_servers(fleet):
+    attention_servers = []
+    for server in fleet:
+        if server["overall_status"] != "HEALTHY":
+            attention_servers.append(server)
+    return attention_servers
+
+# Display the Attention Servers
+def display_attention_servers(attention_servers):
+    print(f""" 
+    ==============================
+         ATTENTION REQUIRED
+    ==============================""")
+    if not attention_servers:
+        print("No servers require attention")
+    else:
+        for server in attention_servers:
+            print(f"""
+    {server["name"]}
+    CPU:        {server["cpu"]:.2f}% ({server["cpu_status"]})           
+    Memory:     {server["memory"]:.2f}% ({server["memory_status"]})
+    Overall:    {server["overall_status"]}""")
 
 
 main()
