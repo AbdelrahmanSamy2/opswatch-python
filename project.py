@@ -7,6 +7,30 @@ def main():
     # Display Fleet Analysis Summary
     display_fleet_summary(analyze_fleet(fleet))
     display_attention_servers(get_attention_servers(fleet))
+    display_utilization_map(fleet)
+
+
+
+def display_utilization_map(fleet):
+    print(f""" 
+==============================
+       UTILIZATION MAP
+==============================
+""")    
+    for server in fleet:
+        print(f"{server["name"]}")
+        for resource_name, resource_utilization in server.items():
+            if resource_name not in ["cpu", "memory"]:
+                continue
+            bar = ""
+            bar_len = int(resource_utilization / 10)
+            for point in range(1, 11):
+                if point <= bar_len:
+                    bar += "#"
+                else:
+                    bar += "-"
+            print(f"{resource_name.upper()+":":<7} {bar} {resource_utilization:.2f}%")
+        print()
 
 
 # Get the number of Servers (Keep asking until getting a positive number of servers)
@@ -89,15 +113,15 @@ def display_servers(fleet):
     for server in fleet:
         align_width = 21
         print(f"""
-        --- Server {server["number"] + 1} ---
-        {'Server: ':<{align_width}} {server["name"]}
-        {'IP Address: ':<{align_width}} {server["ip"]}
-        {'CPU Usage: ':<{align_width}} {server["cpu"]:.2f}%
-        {'CPU Status: ':<{align_width}} {server["cpu_status"]}
-        {'Memory Usage: ':<{align_width}} {server["memory"]:.2f}%
-        {'Memory Status: ':<{align_width}} {server["memory_status"]}
-        {'Average Utilization: ':<{align_width}} {server["average"]:.2f}%
-        {'Overall Status: ':<{align_width}} {server["overall_status"]}""")
+    --- Server {server["number"] + 1} ---
+    {'Server: ':<{align_width}} {server["name"]}
+    {'IP Address: ':<{align_width}} {server["ip"]}
+    {'CPU Usage: ':<{align_width}} {server["cpu"]:.2f}%
+    {'CPU Status: ':<{align_width}} {server["cpu_status"]}
+    {'Memory Usage: ':<{align_width}} {server["memory"]:.2f}%
+    {'Memory Status: ':<{align_width}} {server["memory_status"]}
+    {'Average Utilization: ':<{align_width}} {server["average"]:.2f}%
+    {'Overall Status: ':<{align_width}} {server["overall_status"]}""")
 
 
 # Function that analyzes the fleet and return fleet_summary dictionary
