@@ -160,12 +160,20 @@ def analyze_fleet(fleet):
     return fleet_summary
 
 
+def get_server_statuses(fleet):
+    fleet_status = {
+        server["name"]:server["overall_status"]
+        for server in fleet
+    }
+    return fleet_status
+
 # Display fleet_summary report
 def display_fleet_summary(fleet_summary):
     print(f"""
     ==============================
     {'FLEET SUMMARY':^30}
     ============================== 
+
     Total Servers:          {fleet_summary["total_servers"]}
     HEALTHY:                {fleet_summary["HEALTHY"]}
     WARNING:                {fleet_summary["WARNING"]}
@@ -177,11 +185,7 @@ def display_fleet_summary(fleet_summary):
 
 # Identify the Servers that needs attention (WARNING/CRITICAL)
 def get_attention_servers(fleet):
-    attention_servers = []
-    for server in fleet:
-        if server["overall_status"] != "HEALTHY":
-            attention_servers.append(server)
-    return attention_servers
+    return [server for server in fleet if server["overall_status"] != "HEALTHY"]
 
 
 # Display the Attention Servers
@@ -216,6 +220,7 @@ def make_short_id(normalized_name):
 
 # Display the utilization map for the fleet.
 def display_utilization_map(fleet):
+    print()
     print(f"""==============================\n       UTILIZATION MAP\n==============================""")    
     for server in fleet:
         print(f"{server["name"]}")
