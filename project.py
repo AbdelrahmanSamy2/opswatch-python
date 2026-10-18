@@ -35,11 +35,13 @@ def calculate_average_usage(cpu, memory):
     return (cpu + memory) / 2
 
 
-# Determine the health status
+# Determine the health status based on the usage percentage.
 def determine_health_status(usage):
-    if usage >= 80:
+    thresholds = (60, 80)
+    warning_threshold, critical_threshold = thresholds
+    if usage >= critical_threshold:
         return "CRITICAL"
-    elif usage >= 60:
+    elif usage >= warning_threshold:
         return "WARNING"
     else:
         return "HEALTHY"
