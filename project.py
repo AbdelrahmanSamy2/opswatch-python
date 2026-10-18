@@ -24,13 +24,16 @@ def store_fleet_data(number_servers):
     for server_number in range(number_servers):
         print(f"\n--- Server {server_number + 1} Input ---")
         server_name, server_ip, cpu_usage, memory_usage = get_server_info()
+        normalized_name = normalize_name(server_name)
+        short_id = make_short_id(normalized_name)
         average_usage = calculate_average_usage(cpu_usage, memory_usage)
         cpu_status = determine_health_status(cpu_usage)
         memory_status = determine_health_status(memory_usage)
         overall_status = determine_overall_health_status(cpu_status, memory_status)
         fleet.append({
             "number": server_number,
-            "name": server_name,
+            "name": normalized_name,
+            "short_id": short_id,
             "ip": server_ip,
             "cpu": cpu_usage,
             "memory": memory_usage,
@@ -140,6 +143,7 @@ def get_attention_servers(fleet):
             attention_servers.append(server)
     return attention_servers
 
+
 # Display the Attention Servers
 def display_attention_servers(attention_servers):
     print(f""" 
@@ -147,14 +151,24 @@ def display_attention_servers(attention_servers):
          ATTENTION REQUIRED
     ==============================""")
     if not attention_servers:
-        print("No servers require attention")
+        print("""
+    No servers require attention
+    """)
     else:
         for server in attention_servers:
             print(f"""
-    {server["name"]}
+    ID:         {server["short_id"]}
+    Server:     {server["name"]}
     CPU:        {server["cpu"]:.2f}% ({server["cpu_status"]})           
     Memory:     {server["memory"]:.2f}% ({server["memory_status"]})
     Overall:    {server["overall_status"]}""")
 
+
+def normalize_name(server_name):
+    return server_name.strip().lower()
+
+
+def make_short_id(normalized_name):
+    return normalized_name[:8]
 
 main()
