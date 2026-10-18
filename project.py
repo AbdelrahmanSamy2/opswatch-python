@@ -2,6 +2,8 @@
 def main():
     # Take the inputs about each server and store them into a list of dictionaries.
     fleet = store_fleet_data(get_number_servers())
+    # Optional: Remove Servers
+    optional_remove_server(fleet)
     # Display Servers Report
     display_servers(fleet)
     # Display Fleet Analysis Summary
@@ -9,29 +11,35 @@ def main():
     display_attention_servers(get_attention_servers(fleet))
     display_utilization_map(fleet)
 
+def optional_remove_server(fleet):
+    if len(fleet) == 1:
+        print("Cannot remove the only server in the fleet.")
+        return
+    do_you_want_to_remove = ask_to_remove()
+    while do_you_want_to_remove == 'y':
+        remove_server(fleet)
+        if len(fleet) == 1:
+            return
+        do_you_want_to_remove = ask_to_remove()
 
-
-def display_utilization_map(fleet):
-    print(f""" 
-==============================
-       UTILIZATION MAP
-==============================
-""")    
+def remove_server(fleet):
+    server_name = normalize_name(input("Server name: "))
+    found = False
     for server in fleet:
-        print(f"{server["name"]}")
-        for resource_name, resource_utilization in server.items():
-            if resource_name not in ["cpu", "memory"]:
-                continue
-            bar = ""
-            bar_len = int(resource_utilization / 10)
-            for point in range(1, 11):
-                if point <= bar_len:
-                    bar += "#"
-                else:
-                    bar += "-"
-            print(f"{resource_name.upper()+":":<7} {bar} {resource_utilization:.2f}%")
-        print()
+        if server["name"] == server_name:
+            found = True
+            fleet.remove(server)
+            break
+    if not found:
+        print("Server not found.")
 
+        
+def ask_to_remove():
+    while True:
+        do_you_want_to_remove = input("Remove a server from monitoring? (y/n): ")
+        if do_you_want_to_remove == 'y' or do_you_want_to_remove == 'n':
+            break
+    return do_you_want_to_remove
 
 # Get the number of Servers (Keep asking until getting a positive number of servers)
 def get_number_servers():
@@ -194,5 +202,24 @@ def normalize_name(server_name):
 
 def make_short_id(normalized_name):
     return normalized_name[:8]
+
+
+def display_utilization_map(fleet):
+    print(f"""==============================\n       UTILIZATION MAP\n==============================""")    
+    for server in fleet:
+        print(f"{server["name"]}")
+        for resource_name, resource_utilization in server.items():
+            if resource_name not in ["cpu", "memory"]:
+                continue
+            bar = ""
+            bar_len = int(resource_utilization / 10)
+            for point in range(1, 11):
+                if point <= bar_len:
+                    bar += "#"
+                else:
+                    bar += "-"
+            print(f"{resource_name.upper()+":":<7} {bar} {resource_utilization:.2f}%")
+        print()
+
 
 main()
