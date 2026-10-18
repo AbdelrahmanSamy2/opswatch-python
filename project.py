@@ -63,7 +63,7 @@ def store_fleet_data(number_servers):
     for server_number in range(number_servers):
         print(f"\n--- Server {server_number + 1} Input ---")
         server_name, server_ip, cpu_usage, memory_usage = get_server_info()
-        normalized_name = normalize_name(server_name)
+        normalized_name = normalize(server_name)
         short_id = make_short_id(normalized_name)
         average_usage = calculate_average_usage(cpu_usage, memory_usage)
         cpu_status = determine_health_status(cpu_usage)
@@ -99,7 +99,7 @@ def optional_remove_server(fleet):
 
 # Remove a server from the fleet based on user input.
 def remove_server(fleet):
-    server_name = normalize_name(input("Server name: "))
+    server_name = normalize(input("Server name: "))
     found = False
     for server in fleet:
         if server["name"] == server_name:
@@ -113,8 +113,8 @@ def remove_server(fleet):
 # Ask the user if they want to remove a server from monitoring.
 def ask_to_remove():
     while True:
-        do_you_want_to_remove = input("Remove a server from monitoring? (y/n): ")
-        if do_you_want_to_remove == 'y' or do_you_want_to_remove == 'n':
+        do_you_want_to_remove = normalize(input("Remove a server from monitoring? (y/n): "))
+        if do_you_want_to_remove in ['y', 'n']:
             break
     return do_you_want_to_remove
 
@@ -122,7 +122,7 @@ def ask_to_remove():
 # Displays server information and average utilization.
 def display_servers(fleet):
     print(
-    f"""
+        f"""
     ==============================
     {'SERVER REPORTS':^30}
     ============================== """)
@@ -143,7 +143,7 @@ def display_servers(fleet):
 # Function that analyzes the fleet and return fleet_summary dictionary
 def analyze_fleet(fleet):
     # Analyze fleet of servers and store into fleet_summary
-    fleet_summary={
+    fleet_summary = {
         "HEALTHY": 0,
         "WARNING": 0,
         "CRITICAL": 0
@@ -159,13 +159,6 @@ def analyze_fleet(fleet):
     fleet_summary["total_servers"] = len(fleet)
     return fleet_summary
 
-
-def get_server_statuses(fleet):
-    fleet_status = {
-        server["name"]:server["overall_status"]
-        for server in fleet
-    }
-    return fleet_status
 
 # Display fleet_summary report
 def display_fleet_summary(fleet_summary):
@@ -209,8 +202,8 @@ def display_attention_servers(attention_servers):
 
 
 # Normalize the server name by stripping whitespace and converting to lowercase.
-def normalize_name(server_name):
-    return server_name.strip().lower()
+def normalize(word):
+    return word.strip().lower()
 
 
 # Generate a short ID for the server based on its normalized name.
@@ -223,7 +216,7 @@ def display_utilization_map(fleet):
     print()
     print(f"""==============================\n       UTILIZATION MAP\n==============================""")    
     for server in fleet:
-        print(f"{server["name"]}")
+        print(server["name"])
         for resource_name, resource_utilization in server.items():
             if resource_name not in ["cpu", "memory"]:
                 continue
