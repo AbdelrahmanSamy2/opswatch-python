@@ -12,41 +12,6 @@ def main():
     display_utilization_map(fleet)
 
 
-# Optional: Remove Servers from the Fleet
-def optional_remove_server(fleet):
-    if len(fleet) == 1:
-        print("Cannot remove the only server in the fleet.")
-        return
-    do_you_want_to_remove = ask_to_remove()
-    while do_you_want_to_remove == 'y':
-        remove_server(fleet)
-        if len(fleet) == 1:
-            return
-        do_you_want_to_remove = ask_to_remove()
-
-
-# Remove a server from the fleet based on user input.
-def remove_server(fleet):
-    server_name = normalize_name(input("Server name: "))
-    found = False
-    for server in fleet:
-        if server["name"] == server_name:
-            found = True
-            fleet.remove(server)
-            break
-    if not found:
-        print("Server not found.")
-
-
-# Ask the user if they want to remove a server from monitoring.
-def ask_to_remove():
-    while True:
-        do_you_want_to_remove = input("Remove a server from monitoring? (y/n): ")
-        if do_you_want_to_remove == 'y' or do_you_want_to_remove == 'n':
-            break
-    return do_you_want_to_remove
-
-
 # Get the number of Servers (Keep asking until getting a positive number of servers)
 def get_number_servers():
     while True:
@@ -54,33 +19,6 @@ def get_number_servers():
         if number_servers > 0:
             break
     return number_servers
-
-
-# Take the inputs about each server and store them into a list of dictionaries.
-def store_fleet_data(number_servers):
-    fleet = []
-    for server_number in range(number_servers):
-        print(f"\n--- Server {server_number + 1} Input ---")
-        server_name, server_ip, cpu_usage, memory_usage = get_server_info()
-        normalized_name = normalize_name(server_name)
-        short_id = make_short_id(normalized_name)
-        average_usage = calculate_average_usage(cpu_usage, memory_usage)
-        cpu_status = determine_health_status(cpu_usage)
-        memory_status = determine_health_status(memory_usage)
-        overall_status = determine_overall_health_status(cpu_status, memory_status)
-        fleet.append({
-            "number": server_number,
-            "name": normalized_name,
-            "short_id": short_id,
-            "ip": server_ip,
-            "cpu": cpu_usage,
-            "memory": memory_usage,
-            "average": average_usage,
-            "cpu_status": cpu_status,
-            "memory_status": memory_status,
-            "overall_status": overall_status
-        })
-    return fleet
 
 
 # Retrieves server information from user input.
@@ -115,6 +53,68 @@ def determine_overall_health_status(cpu_status, memory_status):
         return "WARNING"
     else:
         return "HEALTHY"
+
+
+# Take the inputs about each server and store them into a list of dictionaries.
+def store_fleet_data(number_servers):
+    fleet = []
+    for server_number in range(number_servers):
+        print(f"\n--- Server {server_number + 1} Input ---")
+        server_name, server_ip, cpu_usage, memory_usage = get_server_info()
+        normalized_name = normalize_name(server_name)
+        short_id = make_short_id(normalized_name)
+        average_usage = calculate_average_usage(cpu_usage, memory_usage)
+        cpu_status = determine_health_status(cpu_usage)
+        memory_status = determine_health_status(memory_usage)
+        overall_status = determine_overall_health_status(cpu_status, memory_status)
+        fleet.append({
+            "number": server_number,
+            "name": normalized_name,
+            "short_id": short_id,
+            "ip": server_ip,
+            "cpu": cpu_usage,
+            "memory": memory_usage,
+            "average": average_usage,
+            "cpu_status": cpu_status,
+            "memory_status": memory_status,
+            "overall_status": overall_status
+        })
+    return fleet
+
+
+# Optional: Remove Servers from the Fleet
+def optional_remove_server(fleet):
+    if len(fleet) == 1:
+        print("Cannot remove the only server in the fleet.")
+        return
+    do_you_want_to_remove = ask_to_remove()
+    while do_you_want_to_remove == 'y':
+        remove_server(fleet)
+        if len(fleet) == 1:
+            return
+        do_you_want_to_remove = ask_to_remove()
+
+
+# Remove a server from the fleet based on user input.
+def remove_server(fleet):
+    server_name = normalize_name(input("Server name: "))
+    found = False
+    for server in fleet:
+        if server["name"] == server_name:
+            found = True
+            fleet.remove(server)
+            break
+    if not found:
+        print("Server not found.")
+
+
+# Ask the user if they want to remove a server from monitoring.
+def ask_to_remove():
+    while True:
+        do_you_want_to_remove = input("Remove a server from monitoring? (y/n): ")
+        if do_you_want_to_remove == 'y' or do_you_want_to_remove == 'n':
+            break
+    return do_you_want_to_remove
 
 
 # Displays server information and average utilization.
@@ -202,14 +202,17 @@ def display_attention_servers(attention_servers):
     Overall:    {server["overall_status"]}""")
 
 
+# Normalize the server name by stripping whitespace and converting to lowercase.
 def normalize_name(server_name):
     return server_name.strip().lower()
 
 
+# Generate a short ID for the server based on its normalized name.
 def make_short_id(normalized_name):
     return normalized_name[:8]
 
 
+# Display the utilization map for the fleet.
 def display_utilization_map(fleet):
     print(f"""==============================\n       UTILIZATION MAP\n==============================""")    
     for server in fleet:
