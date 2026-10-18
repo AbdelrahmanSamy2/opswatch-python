@@ -11,6 +11,8 @@ def main():
     display_attention_servers(get_attention_servers(fleet))
     display_utilization_map(fleet)
 
+
+# Optional: Remove Servers from the Fleet
 def optional_remove_server(fleet):
     if len(fleet) == 1:
         print("Cannot remove the only server in the fleet.")
@@ -22,6 +24,8 @@ def optional_remove_server(fleet):
             return
         do_you_want_to_remove = ask_to_remove()
 
+
+# Remove a server from the fleet based on user input.
 def remove_server(fleet):
     server_name = normalize_name(input("Server name: "))
     found = False
@@ -33,13 +37,15 @@ def remove_server(fleet):
     if not found:
         print("Server not found.")
 
-        
+
+# Ask the user if they want to remove a server from monitoring.
 def ask_to_remove():
     while True:
         do_you_want_to_remove = input("Remove a server from monitoring? (y/n): ")
         if do_you_want_to_remove == 'y' or do_you_want_to_remove == 'n':
             break
     return do_you_want_to_remove
+
 
 # Get the number of Servers (Keep asking until getting a positive number of servers)
 def get_number_servers():
